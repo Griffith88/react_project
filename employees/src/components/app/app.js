@@ -19,6 +19,7 @@ class App extends Component {
         { name: "Sam Mike", salary: 15000, increase: false, rise: false, id: 4 },
       ],
       term: "",
+      filter: 'all',
     };
     this.maxId = Math.max(...this.state.data.map((item) => item.id)) + 1;
   }
@@ -74,9 +75,24 @@ class App extends Component {
     this.setState({term});
   }
 
+  onToggleFilter = (data, filter) => {
+    switch(filter) {
+      case 'salaryBig': 
+        return data.filter(item => item.salary > 800)
+      case 'onRise':
+        return data.filter(item => item.rise)
+      default:
+        return data
+    }
+  }
+
+  setFilter = (filter) => {
+    this.setState(({filter}))
+  }
+
   render() {
-    const { data, term } = this.state;
-    const visibleData = this.searchEmployee(data, term)
+    const { data, term, filter } = this.state;
+    let visibleData = this.searchEmployee(this.onToggleFilter(data, filter), term)
     return (
       <div className="app">
         <AppInfo
@@ -86,7 +102,7 @@ class App extends Component {
 
         <div className="search-panel">
           <SearchPanel onUpdateSearch={this.onUpdateSearch}/>
-          <AppFilter />
+          <AppFilter setFilter={this.setFilter} />
         </div>
 
         <EmployeesList
